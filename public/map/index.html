@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localizr</title>
+</head>
+
+<body>
+    <!-- header -->
+    <header class="bg-gray-900 text-white py-4 text-center">
+        <h1 class="text-3xl font-bold">
+            Map
+        </h1>
+    </header>
+    <!-- content -->
+    <main class="flex flex-col items-center justify-center h-screen">
+        <div class="text-center gap-4">
+            <!-- locations -->
+            <div id="loc" class="text-center gap-4"></div>
+        </div>
+    </main>
+</body>
+<!-- socket.io -->
+<script src="../socket.io/socket.io.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- client connect -->
+<script type="module">
+    // client connect
+    const socket = io();
+
+    socket.on('connect', () => {
+
+        socket.on('locations', (locations) => {
+            const loc = document.getElementById('loc');
+            if (loc) {
+                loc.innerHTML = locations.map((loc) => {
+                    const { userId, latitude, longitude } = loc;
+                    return `<p class="text-sm"
+                    ><b>${userId}</>:<br/> Lat: ${latitude},<br/> Lng: ${longitude}</p>`;
+                }).join('');
+            } else {
+                console.error('Element with id "loc" not found.');
+            }
+            console.log(locations);
+        });
+
+    });
+</script>
+
+</html>

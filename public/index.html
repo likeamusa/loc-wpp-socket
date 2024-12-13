@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localizr</title>
+</head>
+
+<body>
+    <!-- header -->
+    <header class="bg-gray-900 text-white py-4 text-center">
+        <h1 class="text-3xl font-bold">
+            Localizr
+        </h1>
+    </header>
+    <!-- content -->
+    <main class="flex flex-col items-center justify-center h-screen">
+        <div class="text-center gap-4">
+            <!-- button connect -->
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Ativar
+            </button>
+        </div>
+    </main>
+</body>
+<!-- socket.io -->
+<script src="./socket.io/socket.io.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- client connect -->
+<script type="module">
+    // client connect
+    const socket = io();
+    socket.on('connect', () => {
+        const userId = socket.id;
+
+        console.log(`User connected: ${userId}`);
+
+        navigator.geolocation.watchPosition((position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const userId = socket.id;
+    
+            socket.emit('sendLocation', { latitude, longitude, userId });
+            
+        }, (error) => {
+            console.log(error);
+        }, {
+            enableHighAccuracy: true,
+            timeout: 5000
+        });
+
+    })
+
+
+</script>
+
+</html>
